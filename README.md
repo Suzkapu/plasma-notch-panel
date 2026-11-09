@@ -1,5 +1,7 @@
 # Notch Panel for Plasma 6 on Wayland
 
+<img src="assets/notch-panel-icon.png" alt="Notch Panel icon" width="112" height="112">
+
 Notch Panel adds a deeper section to an existing KDE Plasma panel. Give your task manager or other widgets more room while the launcher, system tray, and clock stay at the panel’s regular size. The notch follows the active Plasma theme and opacity settings, works on all four screen edges, and supports floating panels.
 
 ## Install from a downloaded file
