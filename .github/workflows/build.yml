@@ -1,0 +1,69 @@
+name: Build Plasma widgets
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Build and check packages on Arch Linux
+        run: |
+          docker run --rm --volume "$PWD:/source" --workdir /source archlinux:base-devel bash -euc '
+            pacman -Syu --noconfirm --needed cmake pkgconf libplasma layer-shell-qt qt6-wayland
+            bash scripts/package-plasmoids.sh
+            pacman -Q glibc qt6-base qt6-declarative qt6-wayland libplasma layer-shell-qt > build/dist/notch-panel-build-info.txt
+          '
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: plasma-widgets-arch-x86_64
+          path: build/dist/
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: plasma-widgets-arch-x86_64
+          path: dist
+
+      - name: Attach packages to a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if state="$(gh release view "$TAG" --json isDraft --jq '.isDraft')"; then
+            if [[ "$state" == true ]]; then
+              gh release upload "$TAG" dist/*.plasmoid dist/notch-panel-build-info.txt --clobber
+            else
+              echo "::notice::Release $TAG is already published. Build artifacts are available in this workflow run."
+            fi
+            exit 0
+          fi
+
+          flags=()
+          case "$TAG" in
+            v0.*|*-*) flags+=(--prerelease) ;;
+          esac
+          gh release create "$TAG" dist/*.plasmoid dist/notch-panel-build-info.txt \
+            --verify-tag --draft --generate-notes "${flags[@]}"

@@ -2,7 +2,13 @@
 
 Notch Panel adds a deeper section to an existing KDE Plasma panel. Give your task manager or other widgets more room while the launcher, system tray, and clock stay at the panel’s regular size. The notch follows the active Plasma theme and opacity settings, works on all four screen edges, and supports floating panels.
 
-[Build and install both widgets](CONTRIBUTING.md#build-and-install) before setting up the panel.
+## Install from a downloaded file
+
+1. Download the `notch-panel-….plasmoid` and `notch-end.plasmoid` files from [GitHub Releases](../../releases).
+2. In Plasma’s edit mode, open **Add Widgets → Get New Widgets → Install Widget From Local File** and select the first downloaded file. Repeat for the second file.
+3. Add both widgets to the panel using the setup steps below.
+
+The prebuilt start widget targets x86-64 Arch Linux. Its native helper needs a compatible Plasma stack and the Qt version in the filename. Check the release’s `notch-panel-build-info.txt` for the exact build packages, or [build both widgets locally](CONTRIBUTING.md#build-and-install) for a different setup.
 
 ## Set up the notch
 
