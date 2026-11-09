@@ -1,0 +1,12 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "local.plasma.notchpanel",
+        "Name": "Notch Panel",
+        "Description": "Start marker for a deeper section that holds any panel widgets",
+        "Icon": "preferences-desktop",
+        "Version": "1.8.0",
+        "License": "GPL-3.0-or-later"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

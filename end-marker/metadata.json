@@ -1,0 +1,12 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "local.plasma.notchend",
+        "Name": "Notch End",
+        "Description": "End marker for the Notch Panel section",
+        "Icon": "preferences-desktop",
+        "Version": "1.3.0",
+        "License": "GPL-3.0-or-later"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

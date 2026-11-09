@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.22)
+project(NotchGeometry LANGUAGES CXX)
+
+find_package(Qt6 REQUIRED COMPONENTS Quick Qml WaylandClientPrivate)
+find_package(KF6WindowSystem REQUIRED)
+find_package(LayerShellQt REQUIRED)
+find_package(KF6Config REQUIRED)
+find_package(KF6CoreAddons REQUIRED)
+find_package(KF6KirigamiPlatform REQUIRED)
+find_path(PLASMA_INCLUDE_DIR NAMES Plasma/Theme PATH_SUFFIXES Plasma REQUIRED)
+find_library(PLASMA_LIBRARY NAMES Plasma REQUIRED)
+find_path(PLASMAQUICK_INCLUDE_DIR NAMES PlasmaQuick/AppletQuickItem PATH_SUFFIXES PlasmaQuick REQUIRED)
+find_library(PLASMAQUICK_LIBRARY NAMES PlasmaQuick REQUIRED)
+set(CMAKE_AUTOMOC ON)
+
+add_library(notchgeometryplugin MODULE notchgeometry.cpp)
+target_compile_features(notchgeometryplugin PRIVATE cxx_std_17)
+target_include_directories(notchgeometryplugin PRIVATE "${PLASMA_INCLUDE_DIR}" "${PLASMAQUICK_INCLUDE_DIR}")
+target_link_libraries(notchgeometryplugin PRIVATE Qt6::Quick Qt6::Qml Qt6::WaylandClientPrivate KF6::WindowSystem
+    KF6::ConfigCore KF6::CoreAddons KF6::KirigamiPlatform LayerShellQt::Interface "${PLASMA_LIBRARY}" "${PLASMAQUICK_LIBRARY}")
+install(TARGETS notchgeometryplugin LIBRARY DESTINATION .)
