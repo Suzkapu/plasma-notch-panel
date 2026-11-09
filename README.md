@@ -1,38 +1,25 @@
 # Notch Panel for Plasma 6 on Wayland
 
-Notch Panel gives an existing Plasma panel a deeper section with gently sloping shoulders. It follows all four screen edges and uses the active Plasma style’s background and opacity settings. The shallow part of the panel keeps Plasma’s configured thickness. The notch grows inward from it, including when floating.
+Notch Panel adds a deeper section to an existing KDE Plasma panel. Give your task manager or other widgets more room while the launcher, system tray, and clock stay at the panel’s regular size. The notch follows the active Plasma theme and opacity settings, works on all four screen edges, and supports floating panels.
 
-Build the geometry helper with Qt 6 (including the Wayland client private headers), Plasma, LayerShellQt, and KDE Frameworks development headers, then install both widgets from this directory.
+[Build and install both widgets](CONTRIBUTING.md#build-and-install) before setting up the panel.
 
-```sh
-cmake -S geometry -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-cmake --install build --prefix "$PWD/package/contents/ui/NotchGeometry"
-```
+## Set up the notch
 
-The helper supplies the same shape for the themed background and the compositor's blur and contrast regions. The rectangular stock panel shadow is suppressed while the notch is active.
+1. Right-click your panel and enter Plasma’s edit mode.
+2. Add the **Notch Panel** and **Notch End** widgets. In edit mode, they appear as **Notch start** and **Notch end**.
+3. Drag the two markers around the widgets you want in the deeper section. Only the widgets between the markers go in the notch. To center it, put an expanding **Panel Spacer** outside each marker.
 
-```sh
-kpackagetool6 --type Plasma/Applet --install package
-kpackagetool6 --type Plasma/Applet --install end-marker
-```
+   ```text
+   Launcher | Spacer | Notch start | Icons-only Task Manager | Notch end | Spacer | System Tray | Clock
+   ```
 
-Use `--upgrade` for a package that is already installed. Rebuild the helper after a Qt Wayland update because it uses Qt’s private surface API.
+4. Open **Configure Notch Panel** from the start marker. Set **Notch depth** higher than the regular panel thickness to make the section deeper. Leave **Notch length** at **0** to fit the widgets automatically.
+5. Exit edit mode. The markers disappear and the notch takes their place around the selected widgets. To move widgets in or out later, return to edit mode.
 
-1. In Plasma's panel edit mode, add **Notch Panel** and **Notch End**.
-2. Drag the widgets you want into the gap between **Notch start** and **Notch end**. They remain native panel widgets and can be rearranged normally.
-3. To center the section, place an expanding Plasma Panel Spacer on each side. Plasma distributes the space between the spacers.
-4. Open **Configure Notch Panel** from the start marker. **Notch depth** sets the widget size, with the native panel thickness as the minimum depth. **Notch length** is measured along the edge. Use **0** to fit automatically. With a nonzero length, check **Grow notch if the widgets don’t fit** to extend the section, or clear it to shrink the widgets to fit.
+## Adjust the shape
 
-5. Enable **Hide backgrounds behind panel spacers** for rounded spacer gaps. **Spacer thickness** controls how much of the bar remains behind spacers. Use **0 px** for a fully transparent gap.
+- Set a nonzero **Notch length** for a specific length along the panel. Enable **Grow notch if the widgets don’t fit** to let it expand, or clear it to shrink the widgets to fit.
+- Enable **Hide backgrounds behind panel spacers** for rounded gaps. Set **Spacer thickness** to **0 px** for a full gap or raise it to leave a thin strip of panel.
 
-The markers are visible during editing. The notch and its size overrides pause so Plasma can show its native layout and handle moving and resizing widgets. The notch returns when you leave edit mode. Breeze's running-app indicators face the outside edge.
-
-The notch uses the panel item hierarchy in Plasma 6.8. Plasma still controls panel position, length, baseline thickness, visibility, and the area reserved for maximized windows. The extra notch depth can overlap a maximized window in modes that reserve only the normal panel thickness. The companion `apply-notch.js` provides a scripting helper for bracketing a contiguous group of existing widgets by ID.
-
-- [Plasma widget setup](https://develop.kde.org/docs/plasma/widget/setup/)
-- [Plasma widget configuration](https://develop.kde.org/docs/plasma/widget/configuration/)
-- [Plasma scripting API](https://develop.kde.org/docs/plasma/scripting/api/)
-- [KDE panel view source](https://github.com/KDE/plasma-desktop/blob/master/desktoppackage/contents/views/Panel.qml)
-
-To uninstall the widgets, use `kpackagetool6 --type Plasma/Applet --remove` with `local.plasma.notchpanel` and `local.plasma.notchend`.
+Plasma controls the area reserved for maximized windows. If it reserves only the regular panel thickness, the deeper notch can overlap a maximized window.
